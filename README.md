@@ -1,4 +1,4 @@
-# Sensei — Autonomous AI Security Engineer
+# Sensei Autonomous AI Security Engineer
 
 **Test. Understand. Secure.**
 
