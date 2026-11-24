@@ -52,7 +52,7 @@ class ToolExecutionRunner:
             )
 
         # 2. Scope verification for network/web tools
-        if "http" in tool_name or tool_name in ("nuclei", "nmap", "http_audit"):
+        if "http" in tool_name or tool_name in ("nuclei", "nmap", "http_audit", "reflection_audit", "dom_audit"):
             in_scope, scope_reason = self.scope_registry.is_in_scope(effective_target)
             if not in_scope:
                 self.audit_logger.log(

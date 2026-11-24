@@ -4,7 +4,7 @@ from typing import Set
 from sensei.execution.runner import ToolExecutionRunner
 from sensei.tools.schemas import ToolOutput
 
-ALLOWED_WEB_TOOLS: Set[str] = {"http_audit", "nuclei"}
+ALLOWED_WEB_TOOLS: Set[str] = {"http_audit", "nuclei", "reflection_audit", "dom_audit"}
 
 
 class WebSecuritySpecialist:

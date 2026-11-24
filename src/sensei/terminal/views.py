@@ -186,7 +186,7 @@ def show_agents() -> None:
 
     rows = [
         ("recon", "nmap, http_audit, semgrep, gitleaks, trivy", "Attack surface mapping and lightweight service discovery"),
-        ("web_security", "http_audit, nuclei", "Non-destructive OWASP Top 10 web posture checks"),
+        ("web_security", "http_audit, nuclei, reflection_audit, dom_audit", "Non-destructive OWASP Top 10 web posture, reflection & DOM checks"),
         ("api_security", "http_audit, nuclei", "REST/GraphQL header, CORS, and endpoint audits"),
         ("ai_security", "http_audit", "LLM/AI endpoint exposure and guardrail checks"),
         ("mentor", "LLM / local knowledge", "Explains discovered issues and defense-in-depth fixes"),

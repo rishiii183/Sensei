@@ -222,6 +222,34 @@ class PlanningEngine:
                 )
             )
 
+            # Active parameter reflection and encoding auditor
+            if registry.get("reflection_audit"):
+                steps.append(
+                    PlanStep(
+                        step_index=len(steps),
+                        specialist="web_security",
+                        description=f"Audit input parameter reflection, HTML encoding, and open redirects on {target}",
+                        tool_name="reflection_audit",
+                        risk_level="LOW",
+                        tool_input={"target": target},
+                        rationale="Probe input parameters with benign canary markers to detect unencoded reflection sinks.",
+                    )
+                )
+
+            # DOM & Client-side sink analyzer
+            if registry.get("dom_audit"):
+                steps.append(
+                    PlanStep(
+                        step_index=len(steps),
+                        specialist="web_security",
+                        description=f"Inspect client-side HTML, DOM sinks (innerHTML/eval), and postMessage handlers on {target}",
+                        tool_name="dom_audit",
+                        risk_level="LOW",
+                        tool_input={"target": target},
+                        rationale="Audit client-side script code for dangerous DOM manipulation sinks and cross-window message listeners.",
+                    )
+                )
+
             # Nuclei safe template assessment
             nuclei_adapter = registry.get("nuclei")
             if nuclei_adapter and nuclei_adapter.check_availability():

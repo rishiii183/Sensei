@@ -47,7 +47,7 @@ Unlike conventional conversational chatbots that produce unverified advice or ha
 - **LangGraph Orchestration**: Central StateGraph managing scope validation, planning, permission gates, specialist workflows, result verification, and report synthesis.
 - **Provider-Independent LLM Abstraction**: Powered by LiteLLM supporting OpenAI (`gpt-4o-mini`), Groq (`llama-3.3-70b-versatile`), local Ollama (`llama3.2`), or an offline deterministic heuristic security engine.
 - **Cost & Token Budget Controls**: Enforces per-scan token and cost limits, truncating tool output to prevent context exhaustion.
-- **Zero-Dependency Native Security Scanner**: Ships with `http_audit`, an out-of-the-box non-destructive HTTP/TLS auditor requiring no external binaries.
+- **Zero-Dependency Native Security Scanners**: Ships with `http_audit` (HTTP/TLS headers and sensitive files), `reflection_audit` (active parameter reflection and HTML encoding auditor), and `dom_audit` (client-side DOM sink and postMessage analyzer) requiring zero external binaries.
 - **Modular Specialist Agents**: Controlled LangGraph nodes for Reconnaissance, Web Security, API Security, AI Application Security, and Security Mentorship.
 - **Persistent Local Memory**: SQLite persistence via SQLAlchemy tracking sessions, targets, plans, tool outputs, findings, and reports with full session resumption (`/resume`).
 
@@ -64,6 +64,8 @@ Sensei Orchestrator
 |-- Execution Manager & Rate Limiter (Token-Bucket Pacing)
 |-- Tool Registry & Adapters
 |    |-- http_audit (Native Python HTTP/TLS auditor)
+|    |-- reflection_audit (Active parameter reflection & unencoded HTML auditor)
+|    |-- dom_audit (DOM sink & client-side postMessage analyzer)
 |    |-- nuclei (Non-destructive template scanner)
 |    |-- nmap (Safe port & service discovery)
 |    |-- semgrep (SAST code analysis)
@@ -90,7 +92,7 @@ Sensei enforces three distinct operational security modes:
    - Generates assessment plans and explains proposed actions.
    - Requires explicit manual approval before executing any tool check (except passive safe reads).
 2. **COPILOT (Default)**:
-   - Automatically executes safe and low-risk verification checks (e.g., passive HTTP header inspection, technology discovery).
+   - Automatically executes safe and low-risk verification checks (e.g., passive HTTP header inspection, technology discovery, non-destructive reflection probes).
    - Pauses and prompts the user for confirmation prior to medium or high-risk active probing.
 3. **AUTOPILOT**:
    - Executes predefined, authorized workflows across safe, low, and medium tiers without interrupting.
@@ -120,6 +122,8 @@ Sensei includes a dynamic tool registry where adapters expose schemas, risk leve
 | Tool Identifier | Category | Execution Method | Default Status | Capabilities |
 | :--- | :--- | :--- | :--- | :--- |
 | `http_audit` | Web Security | Native Python (`httpx`) | Built-in (Always Available) | Audits CSP, HSTS, X-Frame-Options, MIME sniffing, cookie security flags, banner disclosures, sensitive endpoints (`/.git/HEAD`, `/.env`, `/robots.txt`). |
+| `reflection_audit` | Web Security | Native Python (`httpx`) | Built-in (Always Available) | Probes input parameters with harmless canary tokens to verify whether user input reflects unencoded into HTML, attribute, or script sinks, and detects open redirects. |
+| `dom_audit` | Web Security | Native Python (`httpx`) | Built-in (Always Available) | Inspects rendered HTML and client scripts for dangerous DOM manipulation sinks (`innerHTML`, `eval`, `document.write`), un-nonced inline scripts, and insecure `postMessage` listeners. |
 | `nuclei` | Web Security | CLI Subprocess | Checked via PATH | Runs ProjectDiscovery Nuclei with safe, non-destructive template sets (`cve`, `misconfig`, `tech`) under strict rate limits. |
 | `nmap` | Network Security | CLI Subprocess | Checked via PATH | Non-intrusive port and service discovery (`-sV --version-light -Pn`) on standard HTTP/API ports. |
 | `semgrep` | Code Security | CLI Subprocess | Checked via PATH | Static application security testing (SAST) identifying security bugs in source files. |
