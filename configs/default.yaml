@@ -1,0 +1,24 @@
+# Sensei Default Configuration
+project:
+  name: Sensei
+  version: 0.1.0
+  tagline: "Test. Understand. Secure."
+
+llm:
+  default_model: openai/gpt-4o-mini
+  fallback_provider: ollama
+  ollama_model: ollama/llama3.2
+  per_scan_token_budget: 150000
+  per_scan_cost_budget: 1.50
+  max_tool_output_chars: 3000
+
+security:
+  default_mode: COPILOT
+  tool_rate_limit_rps: 2.0
+  docker_enabled: false
+  restricted_operations:
+    - denial_of_service
+    - destructive_exploit
+    - credential_theft
+    - data_exfiltration
+    - persistence
